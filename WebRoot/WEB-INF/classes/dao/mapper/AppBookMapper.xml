@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="dao.AppBookMapper" > 
+
+<!-- Result Map 数据库映射到实体类  -->
+<resultMap id="tableMapToModel" type="model.AppBookModel" >
+	<result column="id" property="id"/>
+	<result column="name" property="name"/>
+	<result column="category" property="category"/>
+	<result column="description" property="description"/>
+	<result column="cover" property="cover"/>
+	<result column="createTime" property="createTime"/>
+	<result column="version" property="version"/>
+	<result column="pack" property="pack"/>
+</resultMap>
+
+<!-- 所有条件分页 -->
+<sql id="model">
+    <include refid="modelCount"/>
+    ${pageUtil.orderByCondition}
+    <if test="pageUtil.paging == true" >
+    	${pageUtil.limit}
+    </if>
+</sql>
+
+<!-- 总记录数 -->
+<sql id="modelCount">
+	<where>
+	   <choose>
+	      <when test="pageUtil.like==true">
+	         <include refid="andOtherAllLike"/>
+	      </when>
+	      <otherwise>
+	     	 <include refid="andOtherAll"/>
+	      </otherwise>
+	   </choose>
+	   ${pageUtil.andCondition}
+	</where>
+    ${pageUtil.queryCondition}
+</sql>
+
+<!-- tbaleColumns  所有列 -->
+<sql id="tbaleColumns">
+	<trim suffix="" suffixOverrides=",">
+		id,name,category,description,cover,createTime,version,pack
+	</trim>
+</sql>
+
+
+<!-- insertColumns 入库列 -->
+<sql id="insertColumns">
+	<trim suffix="" suffixOverrides=",">
+		<if test="id != null and id != '' " >
+			id,
+		</if>
+		<if test="name != null and name != '' " >
+			name,
+		</if>
+		<if test="category != null and category != '' " >
+			category,
+		</if>
+		<if test="description != null " >
+			description,
+		</if>
+		<if test="cover != null " >
+			cover,
+		</if>
+		<if test="createTime != null " >
+			createTime,
+		</if>
+		<if test="version != null " >
+			version,
+		</if>
+		<if test="pack != null " >
+			pack,
+		</if>
+    </trim>
+</sql>
+
+
+<!-- insertParams  入库值 -->
+<sql id="insertParams">
+	<trim suffix="" suffixOverrides=",">
+		<if test="id != null and id != '' " >
+			#{id},
+		</if>
+		<if test="name != null and name != '' " >
+			#{name},
+		</if>
+		<if test="category != null and category != '' " >
+			#{category},
+		</if>
+		<if test="description != null " >
+			#{description},
+		</if>
+		<if test="cover != null  " >
+			#{cover},
+		</if>
+		<if test="createTime != null " >
+			#{createTime},
+		</if>
+		<if test="version != null " >
+			#{version},
+		</if>
+		<if test="pack != null " >
+			#{pack},
+		</if>
+    </trim>
+</sql>
+
+
+<!-- updateParams  更新列 -->
+<sql id="updateParams">
+	<trim suffix="" suffixOverrides=",">
+		<if test="id != null and id != '' " >
+			id=#{id},
+	    </if>
+		<if test="name != null and name != '' " >
+			name=#{name},
+	    </if>
+		<if test="category != null and category != '' " >
+			category=#{category},
+	    </if>
+		<if test="description != null " >
+			description=#{description},
+	    </if>
+		<if test="cover != null " >
+			cover=#{cover},
+	    </if>
+	    <if test="createTime != null " >
+			createTime=#{createTime},
+	    </if>
+	     <if test="version != null " >
+			version=#{version},
+	    </if>
+	    <if test="pack != null " >
+			pack=#{pack},
+	    </if>
+    </trim>
+</sql>
+
+
+<!-- 条件 查询  , 去掉主键列-->
+<sql id="andOther">
+	<trim  suffixOverrides="," >
+	  
+		<if test="name != null " >
+			    and name =  #{name}
+		</if>
+		<if test="category != null " >
+			    and category =  #{category}
+		</if>
+		<if test="description != null " >
+			    and description =  #{description}
+		</if>
+		<if test="cover != null " >
+			    and cover =  #{cover}
+		</if>
+		<if test="createTime != null " >
+			    and createTime =  #{createTime}
+		</if> 
+	</trim>
+</sql>
+
+
+<!-- 查询条件  包含所有 -->
+<sql id="andOtherAll">
+	<trim  suffixOverrides="," >
+		<if test="id != null and id != '' " >
+			and id =  #{id}
+	    </if>
+		<if test="name != null " >
+			    and name =  #{name}
+		</if>
+		<if test="category != null " >
+			    and category =  #{category}
+		</if>
+		<if test="description != null " >
+			    and description =  #{description}
+		</if>
+		<if test="createTime != null " >
+			and createTime =  #{createTime}
+		</if> 
+	</trim>
+</sql>
+
+
+<!-- 模糊查询判断 -->
+<sql id="andOtherAllLike">
+	<trim  suffixOverrides="," >
+		<if test="id != null and id != '' " >
+			and id like  &apos;%${id}%&apos;
+	    </if>
+		<if test="name != null and name != '' " >
+			and name like  &apos;%${name}%&apos;
+	    </if>
+		<if test="description != null " >
+			and description like  &apos;%${description}%&apos;
+		</if>
+		<if test="createTime != null " >
+			and createTime like  &apos;%${createTime}%&apos;
+		</if>
+	</trim>
+</sql>
+
+<!-- where 条件  -->
+<sql id="where">
+     where 1=1
+</sql>
+
+<!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+<sql id="columnKey">
+     and id=#{id}
+</sql>
+
+
+<!-- 自定义查询 -->
+<sql id="sql">
+   <if test="sql != null and sql !=''">
+       ${sql}
+   </if>
+   <if test="sql == null || sql==''">
+      select <include refid="tbaleColumns"/> from AppBook <include refid="where"/>
+   </if>
+</sql>
+
+<!-- 查询条件 -->
+<sql id="queryCondition">
+     <if test="queryCondition != null and queryCondition != ''">
+         ${queryCondition}
+     </if>
+</sql>
+
+
+<!-- 添加,插入记录   -->
+<insert id="insert"  parameterType="model.AppBookModel" >
+    insert into AppBook(<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+</insert>
+
+<!-- 添加,SQL添加   -->
+<insert id="insertBySql" parameterType="java.lang.String">
+    <include refid="sql"/>
+</insert>
+
+<!-- 删除,主键删除   -->
+<delete id="deleteByPrimaryKey" parameterType="model.AppBookModel">
+    delete from AppBook<include refid="where"/><include refid="columnKey"/>
+</delete>
+
+<!-- 删除,实体删除   -->
+<delete id="deleteByEntity" parameterType="model.AppBookModel">
+    delete from AppBook<include refid="where"/><include refid="andOtherAll"/>
+</delete>
+
+<!-- 删除,SQL删除   -->
+<delete id="deleteBySql" parameterType="java.lang.String">
+      <include refid="sql"/>
+</delete>
+
+<!-- 修改,主键更新  -->
+<update id="updateByPrimaryKey" parameterType="model.AppBookModel" >
+	update AppBook <set><include refid="updateParams"/></set><include refid="where"/><include refid="columnKey"/>
+</update>
+
+<!-- 修改,SQL更新 -->
+<update id="updateBySql" parameterType="java.lang.String">
+	  <include refid="sql"/>
+</update>
+
+<!-- 查询,主键查询   -->
+<select id="selectByPrimaryKey"  resultMap="tableMapToModel" parameterType="java.lang.Object">
+	select <include refid="tbaleColumns"/> from AppBook <include refid="where"/> <include refid="columnKey"/>
+</select>
+
+<!-- 查询,实体查询   -->
+<select id="selectByEntiry"  resultMap="tableMapToModel" parameterType="model.AppBookModel">
+	select <include refid="tbaleColumns"/> from AppBook <include refid="where"/> <include refid="andOtherAll"/>
+</select>
+
+<!-- 查询,SQL -->
+<select id="selectBySql"  resultMap="tableMapToModel" parameterType="java.lang.String">
+     <include refid="sql"/>
+</select>
+  	
+<!-- 查询 ,总行数,分页 ,模型 -->
+<select id="selectByModelCount" resultType="java.lang.Integer"  parameterType="model.AppBookModel">
+	select count(1) from AppBook <include refid="modelCount"/>
+</select>
+  	
+<!-- 查询,排序,分页,模型  -->
+<select id="selectByModel" resultMap="tableMapToModel"  parameterType="model.AppBookModel">
+	select <include refid="tbaleColumns"/>from AppBook <include refid="model"/>
+</select>
+
+<!-- 查询,总行数,Map -->
+<select id="selectByMapCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+	select count(1) from AppBook <include refid="where"/><include refid="andOtherAll"/>
+    ${queryCondition}
+	<if test="andCondition !=null and andCondition !=''">
+	   and ${andCondition}
+	</if>
+	<if test="orderCondition != null and queryCondition != ''" >
+    	order by ${orderCondition}
+    </if>
+</select>
+  	
+<!-- 查询,参数查询,Map -->
+<select id="selectByMap" resultMap="tableMapToModel"  parameterType="java.util.Map">
+	select <include refid="tbaleColumns"/>from AppBook <include refid="where"/><include refid="andOtherAll"/>
+    ${queryCondition}
+	<if test="andCondition !=null and andCondition !=''">
+	   and ${andCondition}
+	</if>
+	<if test="orderCondition != null and queryCondition != ''" >
+    	order by ${orderCondition}
+    </if>
+</select>
+
+<!-- 查询,总行数,Map分页 -->
+<select id="selectByMapPagingCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+	select count(0) from AppBook <include refid="where"/><include refid="andOtherAll"/>
+    ${queryCondition}
+	<if test="andCondition !=null and andCondition !=''">
+	   and ${andCondition}
+	</if>
+    ${pageUtil.queryCondition}
+    ${pageUtil.andCondition}
+</select>
+
+<!-- 查询,参数查询,Map分页 -->
+<select id="selectByMapPaging" resultMap="tableMapToModel"  parameterType="java.util.Map">
+	select <include refid="tbaleColumns"/>from AppBook <include refid="where"/><include refid="andOtherAll"/>
+	${queryCondition}
+	<if test="andCondition !=null and andCondition !=''">
+	   and ${andCondition}
+	</if>
+	<if test="orderCondition != null and queryCondition != ''" >
+    	order by ${orderCondition}
+    </if>
+    ${pageUtil.queryCondition}
+    ${pageUtil.andCondition}
+    ${pageUtil.orderByCondition}
+    ${pageUtil.limit}
+</select>
+ 
+
+
+</mapper>   

@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="dao.TbsLoginLogMapper" > 
+
+<!-- Result Map 数据库映射到实体类  -->
+<resultMap id="tableMapToModel" type="model.TbsLoginLogModel" >
+	<result column="id" property="id"/>
+	<result column="username" property="username"/>
+	<result column="password" property="password"/>
+	<result column="createTime" property="createTime"/>
+	<result column="ip" property="ip"/>
+	<result column="userAgent" property="userAgent"/>
+	<result column="status" property="status"/>
+	<result column="msg" property="msg"/>
+</resultMap>
+
+<!-- 所有条件分页 -->
+<sql id="model">
+    <include refid="modelCount"/>
+    ${pageUtil.orderByCondition}
+    <if test="pageUtil.paging == true" >
+    	${pageUtil.limit}
+    </if>
+</sql>
+
+<!-- 总记录数 -->
+<sql id="modelCount">
+	<where>
+	   <choose>
+	      <when test="pageUtil.like==true">
+	         <include refid="andOtherAllLike"/>
+	      </when>
+	      <otherwise>
+	     	 <include refid="andOtherAll"/>
+	      </otherwise>
+	   </choose>
+	   ${pageUtil.andCondition}
+	</where>
+    ${pageUtil.queryCondition}
+</sql>
+
+<!-- tbaleColumns  所有列 -->
+<!--  id,name,password,nickName,email,icon,state,time,count,createTime,remark -->
+<sql id="tbaleColumns">
+	<trim suffix="" suffixOverrides=",">
+		id,username,password,createTime,ip,userAgent,status,msg,		
+	</trim>
+</sql>
+
+
+<!-- insertColumns 入库列 -->
+<sql id="insertColumns">
+	<trim suffix="" suffixOverrides=",">
+		<if test="id != null and id != '' " >
+			id,
+		</if>
+		<if test="username != null and username != '' " >
+			username,
+		</if>
+		<if test="password != null and password != '' " >
+			password,
+		</if>
+		<if test="createTime != null " >
+			createTime,
+		</if>
+		<if test="ip != null and ip != '' " >
+			ip,
+		</if>
+		<if test="userAgent != null and userAgent != '' " >
+			userAgent,
+		</if>
+		<if test="status != null " >
+			status,
+		</if>
+		<if test="msg != null and msg != '' " >
+			msg,
+		</if>
+    </trim>
+</sql>
+
+
+<!-- insertParams  入库值 -->
+<sql id="insertParams">
+	<trim suffix="" suffixOverrides=",">
+		<if test="id != null and id != '' " >
+			#{id},
+		</if>
+		<if test="username != null and username != '' " >
+			#{username},
+		</if>
+		<if test="password != null and password != '' " >
+			#{password},
+		</if>
+		<if test="createTime != null " >
+			#{createTime},
+		</if>
+		<if test="ip != null and ip != '' " >
+			#{ip},
+		</if>
+		<if test="userAgent != null and userAgent != '' " >
+			#{userAgent},
+		</if>
+		<if test="status != null " >
+			#{status},
+		</if>
+		<if test="msg != null and msg != '' " >
+			#{msg},
+		</if>
+    </trim>
+</sql>
+
+
+<!-- updateParams  更新列 -->
+<sql id="updateParams">
+	<trim suffix="" suffixOverrides=",">
+		<if test="id != null and id != '' " >
+			id=#{id},
+	    </if>
+		<if test="username != null and username != '' " >
+			username=#{username},
+	    </if>
+		<if test="password != null and password != '' " >
+			password=#{password},
+	    </if>
+		<if test="createTime != null " >
+			createTime=#{createTime},
+	    </if>
+		<if test="ip != null and ip != '' " >
+			ip=#{ip},
+	    </if>
+		<if test="userAgent != null and userAgent != '' " >
+			userAgent=#{userAgent},
+	    </if>
+		<if test="status != null " >
+			status=#{status},
+	    </if>
+		<if test="msg != null and msg != '' " >
+			msg=#{msg},
+	    </if>
+    </trim>
+</sql>
+
+
+<!-- 条件 查询  , 去掉主键列-->
+<sql id="andOther">
+	<trim  suffixOverrides="," >
+	  
+		<if test="username != null " >
+			    and username =  #{username}
+		</if>
+		<if test="password != null " >
+			    and password =  #{password}
+		</if>
+		<if test="createTime != null " >
+			    and createTime =  #{createTime}
+		</if>
+		<if test="ip != null " >
+			    and ip =  #{ip}
+		</if>
+		<if test="userAgent != null " >
+			    and userAgent =  #{userAgent}
+		</if>
+		<if test="status != null " >
+			    and status =  #{status}
+		</if>
+		<if test="msg != null " >
+			    and msg =  #{msg}
+		</if>
+	</trim>
+</sql>
+
+
+<!-- 查询条件  包含所有 -->
+<sql id="andOtherAll">
+	<trim  suffixOverrides="," >
+		<if test="id != null and id != '' " >
+			and id =  #{id}
+	    </if>
+		<if test="username != null and username != '' " >
+			and username =  #{username}
+	    </if>
+		<if test="password != null and password != '' " >
+			and password =  #{password}
+	    </if>
+		<if test="createTime != null " >
+			and createTime =  #{createTime}
+		</if>
+		<if test="ip != null and ip != '' " >
+			and ip =  #{ip}
+	    </if>
+		<if test="userAgent != null and userAgent != '' " >
+			and userAgent =  #{userAgent}
+	    </if>
+		<if test="status != null " >
+			and status =  #{status}
+		</if>
+		<if test="msg != null and msg != '' " >
+			and msg =  #{msg}
+	    </if>
+	</trim>
+</sql>
+
+
+<!-- 模糊查询判断 -->
+<sql id="andOtherAllLike">
+	<trim  suffixOverrides="," >
+		<if test="id != null and id != '' " >
+			and id like  &apos;%${id}%&apos;
+	    </if>
+		<if test="username != null and username != '' " >
+			and username like  &apos;%${username}%&apos;
+	    </if>
+		<if test="password != null and password != '' " >
+			and password like  &apos;%${password}%&apos;
+	    </if>
+		<if test="createTime != null " >
+			and createTime like  &apos;%${createTime}%&apos;
+		</if>
+		<if test="ip != null and ip != '' " >
+			and ip like  &apos;%${ip}%&apos;
+	    </if>
+		<if test="userAgent != null and userAgent != '' " >
+			and userAgent like  &apos;%${userAgent}%&apos;
+	    </if>
+		<if test="status != null " >
+			and status like  &apos;%${status}%&apos;
+		</if>
+		<if test="msg != null and msg != '' " >
+			and msg like  &apos;%${msg}%&apos;
+	    </if>
+	</trim>
+</sql>
+
+<!-- where 条件  -->
+<sql id="where">
+     where 1=1
+</sql>
+
+<!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+<sql id="columnKey">
+     and id=#{id}
+</sql>
+
+
+<!-- 自定义查询 -->
+<sql id="sql">
+   <if test="sql != null and sql !=''">
+       ${sql}
+   </if>
+   <if test="sql == null || sql==''">
+      select <include refid="tbaleColumns"/> from TbsLoginLog <include refid="where"/>
+   </if>
+</sql>
+
+<!-- 查询条件 -->
+<sql id="queryCondition">
+     <if test="queryCondition != null and queryCondition != ''">
+         ${queryCondition}
+     </if>
+</sql>
+
+
+<!-- 添加,插入记录   -->
+<insert id="insert"  parameterType="model.TbsLoginLogModel" >
+    insert into TbsLoginLog(<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+</insert>
+
+<!-- 添加,SQL添加   -->
+<insert id="insertBySql" parameterType="java.lang.String">
+    <include refid="sql"/>
+</insert>
+
+<!-- 删除,主键删除   -->
+<delete id="deleteByPrimaryKey" parameterType="model.TbsLoginLogModel">
+    delete from TbsLoginLog<include refid="where"/><include refid="columnKey"/>
+</delete>
+
+<!-- 删除,实体删除   -->
+<delete id="deleteByEntity" parameterType="model.TbsLoginLogModel">
+    delete from TbsLoginLog<include refid="where"/><include refid="andOtherAll"/>
+</delete>
+
+<!-- 删除,SQL删除   -->
+<delete id="deleteBySql" parameterType="java.lang.String">
+      <include refid="sql"/>
+</delete>
+
+<!-- 修改,主键更新  -->
+<update id="updateByPrimaryKey" parameterType="model.TbsLoginLogModel" >
+	update TbsLoginLog <set><include refid="updateParams"/></set><include refid="where"/><include refid="columnKey"/>
+</update>
+
+<!-- 修改,SQL更新 -->
+<update id="updateBySql" parameterType="java.lang.String">
+	  <include refid="sql"/>
+</update>
+
+<!-- 查询,主键查询   -->
+<select id="selectByPrimaryKey"  resultMap="tableMapToModel" parameterType="java.lang.Object">
+	select <include refid="tbaleColumns"/> from TbsLoginLog <include refid="where"/> <include refid="columnKey"/>
+</select>
+
+<!-- 查询,实体查询   -->
+<select id="selectByEntiry"  resultMap="tableMapToModel" parameterType="model.TbsLoginLogModel">
+	select <include refid="tbaleColumns"/> from TbsLoginLog <include refid="where"/> <include refid="andOtherAll"/>
+</select>
+
+<!-- 查询,SQL -->
+<select id="selectBySql"  resultMap="tableMapToModel" parameterType="java.lang.String">
+     <include refid="sql"/>
+</select>
+  	
+<!-- 查询 ,总行数,分页 ,模型 -->
+<select id="selectByModelCount" resultType="java.lang.Integer"  parameterType="model.TbsLoginLogModel">
+	select count(1) from TbsLoginLog <include refid="modelCount"/>
+</select>
+  	
+<!-- 查询,排序,分页,模型  -->
+<select id="selectByModel" resultMap="tableMapToModel"  parameterType="model.TbsLoginLogModel">
+	select <include refid="tbaleColumns"/>from TbsLoginLog <include refid="model"/>
+</select>
+
+<!-- 查询,总行数,Map -->
+<select id="selectByMapCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+	select count(1) from TbsLoginLog <include refid="where"/><include refid="andOtherAll"/>
+    ${queryCondition}
+	<if test="andCondition !=null and andCondition !=''">
+	   and ${andCondition}
+	</if>
+	<if test="orderCondition != null and queryCondition != ''" >
+    	order by ${orderCondition}
+    </if>
+</select>
+  	
+<!-- 查询,参数查询,Map -->
+<select id="selectByMap" resultMap="tableMapToModel"  parameterType="java.util.Map">
+	select <include refid="tbaleColumns"/>from TbsLoginLog <include refid="where"/><include refid="andOtherAll"/>
+    ${queryCondition}
+	<if test="andCondition !=null and andCondition !=''">
+	   and ${andCondition}
+	</if>
+	<if test="orderCondition != null and queryCondition != ''" >
+    	order by ${orderCondition}
+    </if>
+</select>
+
+<!-- 查询,总行数,Map分页 -->
+<select id="selectByMapPagingCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+	select count(0) from TbsLoginLog <include refid="where"/><include refid="andOtherAll"/>
+    ${queryCondition}
+	<if test="andCondition !=null and andCondition !=''">
+	   and ${andCondition}
+	</if>
+    ${pageUtil.queryCondition}
+    ${pageUtil.andCondition}
+</select>
+
+<!-- 查询,参数查询,Map分页 -->
+<select id="selectByMapPaging" resultMap="tableMapToModel"  parameterType="java.util.Map">
+	select <include refid="tbaleColumns"/>from TbsLoginLog <include refid="where"/><include refid="andOtherAll"/>
+	${queryCondition}
+	<if test="andCondition !=null and andCondition !=''">
+	   and ${andCondition}
+	</if>
+	<if test="orderCondition != null and queryCondition != ''" >
+    	order by ${orderCondition}
+    </if>
+    ${pageUtil.queryCondition}
+    ${pageUtil.andCondition}
+    ${pageUtil.orderByCondition}
+    ${pageUtil.limit}
+</select>
+
+<!--查询, 图表 -->
+<select id="charts" parameterType="java.util.Map" resultType="java.util.Map">
+    <!-- '%Y-%m-%d %H:%i:%s' -->
+	SELECT COUNT(*),DATE_FORMAT(createTime,'${groupTimeFormat}') as createTime  FROM TbsLoginLog 
+	<if test="startTimeFormat!=null and endTimeFormat!=null">
+		WHERE 
+		createTime&gt;=DATE_FORMAT(NOW(), '${startTimeFormat}') AND createTime&lt;=DATE_FORMAT(NOW(), '${endTimeFormat}') 
+	</if> 
+	GROUP BY DATE_FORMAT(createTime,'${groupTimeFormat}')
+</select>
+
+<!--/////////////// 级联递归查询  一对多 ///////////////-->
+<resultMap type="model.TbsLoginLogModel" id="tableMapToModelChild" extends="tableMapToModel">
+  
+   <!-- 一对一关联   注意 顺序       需要用时开启 -->
+   <!--  
+  <association property="tbsLoginLogModel" column="parentId" select="getParent">
+  		 
+  </association>
+  -->
+  
+  <!-- 一对多关联  -->
+  <collection property="listTbsLoginLogModel" column="id" select="getChild">
+      <!-- 对象的属性 -->
+  </collection>
+  
+</resultMap>
+ 
+<!--  
+<select id="getParent" resultMap="tableMapToModelChild" parameterType="String">
+     SELECT * FROM TbsLoginLog where id=#{parentId}
+</select>
+-->
+
+<select id="getChild" resultMap="tableMapToModelChild" parameterType="String">
+     SELECT * FROM TbsLoginLog where parentId=#{id}
+</select>
+
+<select id="selectByChild" resultMap="tableMapToModelChild"  parameterType="model.TbsLoginLogModel">
+    SELECT <include refid="tbaleColumns"/>FROM TbsLoginLog
+    <where>
+        <include refid="andOtherAll"/>
+	   	${pageUtil.andCondition}
+    </where>
+    	${pageUtil.queryCondition}
+    	${pageUtil.orderByCondition}
+    <if test="pageUtil.paging == true" >
+    	${pageUtil.limit}
+    </if>
+    
+</select>
+
+<!--/////////////// 级联递归查询  一对多 ///////////////-->
+
+
+<!--//////////////////////增加/////////////////////// -->
+</mapper>   
